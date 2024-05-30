@@ -33,8 +33,8 @@ public class EmployeeServlet extends HttpServlet {
                 RequestDispatcher rd = request.getRequestDispatcher("employee/lista.jsp");
                 rd.forward(request,response);
                 break;
-            case "new":
-                request.getRequestDispatcher("employee/form_new.jsp").forward(request,response);
+            case "crear":
+                request.getRequestDispatcher("employee/form_crear.jsp").forward(request,response);
                 break;
             case "edit":
                 String id = request.getParameter("id");

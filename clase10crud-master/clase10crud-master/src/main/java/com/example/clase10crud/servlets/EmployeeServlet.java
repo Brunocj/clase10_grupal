@@ -1,14 +1,13 @@
 package com.example.clase10crud.servlets;
 import java.util.ArrayList;
-import com.example.clase10crud.beans.Job;
-import com.example.clase10crud.daos.JobDao;
+import com.example.clase10crud.beans.Employee;
+import com.example.clase10crud.daos.EmployeeDao;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.example.clase10crud.daos.EmployeeDao;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class EmployeeServlet extends HttpServlet {
         switch (action){
             case "lista":
                 //saca del modelo
-                ArrayList<Job> list = employeeDao.listar();
+                ArrayList<Employee> list = employeeDao.listar();
 
                 //mandar la lista a la vista -> job/lista.jsp
                 request.setAttribute("lista",list);
@@ -37,28 +36,9 @@ public class EmployeeServlet extends HttpServlet {
                 request.getRequestDispatcher("employee/form_crear.jsp").forward(request,response);
                 break;
             case "edit":
-                String id = request.getParameter("id");
-                Job job = employeeDao.buscarPorId(id);
-
-                if(job != null){
-                    request.setAttribute("job",job);
-                    request.getRequestDispatcher("job/form_edit.jsp").forward(request,response);
-                }else{
-                    response.sendRedirect(request.getContextPath() + "/JobServlet");
-                }
                 break;
             case "del":
-                String idd = request.getParameter("id");
-                Job jobb = employeeDao.buscarPorId(idd);
 
-                if(jobb != null){
-                    try {
-                        employeeDao.borrar(idd);
-                    } catch (SQLException e) {
-                        System.out.println("Log: excepcion: " + e.getMessage());
-                    }
-                }
-                response.sendRedirect(request.getContextPath() + "/JobServlet");
                 break;
         }
     }

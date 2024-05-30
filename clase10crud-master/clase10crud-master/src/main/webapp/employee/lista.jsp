@@ -26,6 +26,7 @@
             <label for="floatingInput">Buscar trabajo</label>
         </div>
     </form>
+    <!--hola-->
     <table class="table table-striped mt-3">
         <tr class="table-primary">
             <th>emp_id</th>

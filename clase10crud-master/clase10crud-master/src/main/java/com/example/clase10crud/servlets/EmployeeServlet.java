@@ -1,5 +1,5 @@
 package com.example.clase10crud.servlets;
-
+import java.util.ArrayList;
 import com.example.clase10crud.beans.Job;
 import com.example.clase10crud.daos.JobDao;
 import jakarta.servlet.RequestDispatcher;
@@ -125,10 +125,10 @@ public class EmployeeServlet extends HttpServlet {
                     job.setMinSalary(Integer.parseInt(minSalary2));
                     job.setMaxSalary(Integer.parseInt(maxSalary2));
 
-                    jobDao.actualizar(job);
+                    EmployeeDao.actualizar(job);
                     response.sendRedirect(request.getContextPath() + "/JobServlet");
                 }else{
-                    request.setAttribute("job",jobDao.buscarPorId(jobId2));
+                    request.setAttribute("job",EmployeeDao.buscarPorId(jobId2));
                     request.getRequestDispatcher("job/form_edit.jsp").forward(request,response);
                 }
                 break;

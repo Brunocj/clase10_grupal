@@ -20,7 +20,7 @@ public class JobDao {
 
         String url = "jdbc:mysql://localhost:3306/hr";
         String username = "root";
-        String password = "root";
+        String password = "123456";
 
         String sql = "select * from jobs";
 
@@ -58,7 +58,7 @@ public class JobDao {
 
         String url = "jdbc:mysql://localhost:3306/hr";
         String username = "root";
-        String password = "root";
+        String password = "123456";
 
         String sql = "select max(max_salary) from jobs";
 
@@ -88,7 +88,7 @@ public class JobDao {
 
         String url = "jdbc:mysql://localhost:3306/hr";
         String username = "root";
-        String password = "root";
+        String password = "123456";
 
         String sql = "insert into jobs (job_id, job_title, min_salary,max_salary) values (?,?,?,?)";
 
@@ -119,7 +119,7 @@ public class JobDao {
 
         String url = "jdbc:mysql://localhost:3306/hr";
         String username = "root";
-        String password = "root";
+        String password = "123456";
 
         String sql = "select * from jobs where job_id = ?";
 
@@ -155,7 +155,7 @@ public class JobDao {
 
         String url = "jdbc:mysql://localhost:3306/hr";
         String username = "root";
-        String password = "root";
+        String password = "123456";
 
         String sql = "update jobs set job_title = ?, min_salary = ?, max_salary = ? where job_id = ?";
 
@@ -184,7 +184,7 @@ public class JobDao {
 
         String url = "jdbc:mysql://localhost:3306/hr";
         String username = "root";
-        String password = "root";
+        String password = "123456";
 
         String sql = "delete from jobs where job_id = ?";
 
@@ -209,7 +209,7 @@ public class JobDao {
 
         String url = "jdbc:mysql://localhost:3306/hr";
         String username = "root";
-        String password = "root";
+        String password = "123456";
 
         String sql = "select * from jobs where job_id = ? or lower(job_title) like lower(?);";
 

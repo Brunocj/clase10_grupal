@@ -1,16 +1,14 @@
 package com.example.clase10crud.daos;
 
-
-import com.example.clase10crud.beans.Job;
+import com.example.clase10crud.beans.Employee;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class JobDao {
+public class EmployeeDao {
+    public ArrayList<Employee> listar(){
 
-    public ArrayList<Job> listar(){
-
-        ArrayList<Job> lista = new ArrayList<>();
+        ArrayList<Employee> lista = new ArrayList<>();
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -22,7 +20,17 @@ public class JobDao {
         String username = "root";
         String password = "123456";
 
-        String sql = "select * from jobs";
+        String sql = "SELECT \n" +
+                "    e.employee_id,\n" +
+                "    e.first_name,\n" +
+                "    e.last_name,\n" +
+                "    e.hire_date,\n" +
+                "    e.email,\n" +
+                "    (SELECT CONCAT(m.first_name, ' ', m.last_name)\n" +
+                "     FROM employees m\n" +
+                "     WHERE m.employee_id = e.manager_id) AS manager_name\n" +
+                "FROM \n" +
+                "    employees e;";
 
 
         try (Connection conn = DriverManager.getConnection(url, username, password);
@@ -30,13 +38,14 @@ public class JobDao {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                Job job = new Job();
-                job.setJobId(rs.getString(1));
-                job.setJobTitle(rs.getString(2));
-                job.setMinSalary(rs.getInt(3));
-                job.setMaxSalary(rs.getInt(4));
-
-                lista.add(job);
+                Employee employee = new Employee();
+                employee.setId(rs.getInt(1));
+                employee.setHire_date(rs.getDate(2));
+                employee.setFirst_name(rs.getString(3));
+                employee.setLast_name(rs.getString(4));
+                employee.setEmail(rs.getString(5));
+                employee.setManager(rs.getString(6));
+                lista.add(employee);
             }
 
         } catch (SQLException e) {
@@ -46,9 +55,7 @@ public class JobDao {
         return lista;
     }
 
-    public int getMaxSalary(){
-
-        int salario = 0;
+    public void crear(String fname, String lname, int email, int phnumber){
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -60,181 +67,20 @@ public class JobDao {
         String username = "root";
         String password = "123456";
 
-        String sql = "select max(max_salary) from jobs";
-
-
-        try (Connection conn = DriverManager.getConnection(url, username, password);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                salario = rs.getInt(1);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return salario;
-    }
-
-    public void crear(String jobId, String jobTitle, int minSalary, int maxSalary){
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        String url = "jdbc:mysql://localhost:3306/hr";
-        String username = "root";
-        String password = "123456";
-
-        String sql = "insert into jobs (job_id, job_title, min_salary,max_salary) values (?,?,?,?)";
+        String sql = "insert into employees (first_name, last_name, email,phone_number) values (?,?,?,?)";
 
         try(Connection connection = DriverManager.getConnection(url,username,password);
             PreparedStatement pstmt = connection.prepareStatement(sql)){
 
-            pstmt.setString(1,jobId);
-            pstmt.setString(2,jobTitle);
-            pstmt.setInt(3,minSalary);
-            pstmt.setInt(4,maxSalary);
+            pstmt.setString(1,fname);
+            pstmt.setString(2,lname);
+            pstmt.setInt(3,email);
+            pstmt.setInt(4,phnumber);
 
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public Job buscarPorId(String id){
-
-        Job job = null;
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        String url = "jdbc:mysql://localhost:3306/hr";
-        String username = "root";
-        String password = "123456";
-
-        String sql = "select * from jobs where job_id = ?";
-
-
-        try (Connection conn = DriverManager.getConnection(url, username, password);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1,id);
-
-            try(ResultSet rs = pstmt.executeQuery()){
-                while (rs.next()) {
-                    job = new Job();
-                    job.setJobId(rs.getString(1));
-                    job.setJobTitle(rs.getString(2));
-                    job.setMinSalary(rs.getInt(3));
-                    job.setMaxSalary(rs.getInt(4));
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return job;
-    }
-
-    public void actualizar(Job job){
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        String url = "jdbc:mysql://localhost:3306/hr";
-        String username = "root";
-        String password = "123456";
-
-        String sql = "update jobs set job_title = ?, min_salary = ?, max_salary = ? where job_id = ?";
-
-        try(Connection connection = DriverManager.getConnection(url,username,password);
-            PreparedStatement pstmt = connection.prepareStatement(sql)){
-
-            pstmt.setString(1,job.getJobTitle());
-            pstmt.setInt(2,job.getMinSalary());
-            pstmt.setInt(3,job.getMaxSalary());
-            pstmt.setString(4,job.getJobId());
-
-            pstmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void borrar(String jobId) throws SQLException {
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        String url = "jdbc:mysql://localhost:3306/hr";
-        String username = "root";
-        String password = "123456";
-
-        String sql = "delete from jobs where job_id = ?";
-
-        try(Connection connection = DriverManager.getConnection(url,username,password);
-            PreparedStatement pstmt = connection.prepareStatement(sql)){
-
-            pstmt.setString(1,jobId);
-            pstmt.executeUpdate();
-
-        }
-    }
-
-    public ArrayList<Job> buscarIdOrTitle(String name){
-
-        ArrayList<Job> lista = new ArrayList<>();
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        String url = "jdbc:mysql://localhost:3306/hr";
-        String username = "root";
-        String password = "123456";
-
-        String sql = "select * from jobs where job_id = ? or lower(job_title) like lower(?);";
-
-
-        try (Connection conn = DriverManager.getConnection(url, username, password);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1,name);
-            pstmt.setString(2,"%" + name + "%");
-
-            try(ResultSet rs = pstmt.executeQuery()){
-                while (rs.next()) {
-                    Job job = new Job();
-                    job.setJobId(rs.getString(1));
-                    job.setJobTitle(rs.getString(2));
-                    job.setMinSalary(rs.getInt(3));
-                    job.setMaxSalary(rs.getInt(4));
-
-                    lista.add(job);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return lista;
     }
 }

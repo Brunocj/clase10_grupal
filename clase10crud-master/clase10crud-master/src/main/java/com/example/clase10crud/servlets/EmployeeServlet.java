@@ -134,7 +134,7 @@ public class EmployeeServlet extends HttpServlet {
                 break;
             case "s":
                 String textBuscar = request.getParameter("textoBuscar");
-                ArrayList<Job> lista = jobDao.buscarIdOrTitle(textBuscar);
+                ArrayList<Job> lista = employeeDao.buscarIdOrTitle(textBuscar);
 
                 request.setAttribute("lista",lista);
                 request.setAttribute("busqueda",textBuscar);
